@@ -119,3 +119,38 @@ func GetBuError(err error) *BuError {
 	}
 	return UnknownErr(err)
 }
+
+func SetError(srcErr, err error) error {
+	GetBuError(srcErr).Error_ = err
+	return srcErr
+}
+
+func SetLogLevel(err error, level Level) error {
+	GetBuError(err).LogLevel_ = level
+	return err
+}
+
+func SetErrMsg(err error, msg string) error {
+	GetBuError(err).ErrMsg_ = msg
+	return err
+}
+
+func SetResponseMsg(err error, msg string) error {
+	GetBuError(err).ResponseMsg_ = msg
+	return err
+}
+
+func SetResponseCode(err error, code string) error {
+	GetBuError(err).ResponseCode_ = code
+	return err
+}
+
+func SetNeedTrace(err error, trace bool) error {
+	GetBuError(err).NeedTrace_ = trace
+	return err
+}
+
+func SetHttpCode(err error, code int) error {
+	GetBuError(err).HttpCode_ = code
+	return err
+}

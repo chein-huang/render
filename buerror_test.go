@@ -173,6 +173,7 @@ func TestIs(t *testing.T) {
 	}
 	assert.True(errors.Is(err, err2))
 	assert.False(errors.Is(err, err3))
+	assert.True(errors.Is(err3, err2))
 	assert.True(errors.Is(err2, fmt.Errorf("wrap2-%w", fmt.Errorf("wrap-%w", err))))
 	assert.False(errors.Is(err2, fmt.Errorf("%v", err)))
 	assert.Equal(err, render.GetBuError(fmt.Errorf("wrap2-%w", fmt.Errorf("wrap-%w", err))))
@@ -200,4 +201,18 @@ func TestUnknownErr(t *testing.T) {
 	assert.Equal(render.UnknownErrResponseMsg.Map["en"], err.ResponseMessage([]render.Language{{"en", 1}, {"unknown", 1}}))
 	assert.Equal(render.ErrorLevel, err.LogLevel())
 	assert.True(err.LogTrace())
+}
+
+func TestSetter(t *testing.T) {
+	assert := require.New(t)
+
+	unknownErr := render.UnknownErr(fmt.Errorf("unknown"))
+	err := fmt.Errorf("wrap1-%w", fmt.Errorf("wrap2-%w", render.UnknownErr(fmt.Errorf("unknown"))))
+	assert.NotEqual(unknownErr.Error(), render.GetBuError(render.SetError(err, fmt.Errorf("err2"))).Error())
+	assert.NotEqual(unknownErr.LogLevel(), render.GetBuError(render.SetLogLevel(err, render.DebugLevel)))
+	assert.NotEqual(unknownErr.Error(), render.GetBuError(render.SetErrMsg(err, "err msg")).Error())
+	assert.NotEqual(unknownErr.ResponseMessage(nil), render.GetBuError(render.SetResponseMsg(err, "response msg")).ResponseMessage(nil))
+	assert.NotEqual(unknownErr.ResponseCode(), render.GetBuError(render.SetResponseCode(err, "code")).ResponseCode())
+	assert.NotEqual(unknownErr.LogTrace(), render.GetBuError(render.SetNeedTrace(err, false)).LogTrace())
+	assert.NotEqual(unknownErr.HttpCode(), render.GetBuError(render.SetHttpCode(err, http.StatusBadRequest)).HttpCode())
 }

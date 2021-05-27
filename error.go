@@ -7,8 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
-	// . "gitlab.bj.sensetime.com/fdc/parrotsos-data-backend/libs/errorc"
-	// . "gitlab.bj.sensetime.com/fdc/parrotsos-data-backend/libs/requestid"
+
+	"github.com/chein-huang/requestid"
 )
 
 func RenderError(writer interface{}, err error) {
@@ -38,27 +38,28 @@ func RenderError(writer interface{}, err error) {
 		panic(fmt.Sprintf("invalid writer: %T", err))
 	}
 
-	Log(writer, err, httpCode == http.StatusInternalServerError)
+	Log(writer, err, buErr.LogLevel(), buErr.LogTrace() || httpCode == http.StatusInternalServerError)
 }
 
-func Log(logger interface{}, err error, trace bool) {
+func Log(logger interface{}, err error, level Level, trace bool) {
 	msg := "%v"
 
-	buErr := GetBuError(err)
-	if buErr.LogTrace() || trace {
+	if trace {
 		msg = "%+v"
 	}
 
+	var logf func(level logrus.Level, format string, args ...interface{})
 	switch logger := logger.(type) {
 	case *logrus.Entry:
-		logger.Logf(logrus.Level(buErr.LogLevel()), msg, err)
+		logf = logger.Logf
 	case *logrus.Logger:
-		logger.Logf(logrus.Level(buErr.LogLevel()), msg, err)
+		logf = logger.Logf
 	case *gin.Context:
-		// GetLogger(logger).Logf(logrus.Level(level), msg, err)
+		logf = requestid.GetLogger(logger).Logf
 	default:
-		panic(fmt.Errorf("invalid logger type: %T", logger))
+		logf = logrus.StandardLogger().Logf
 	}
+	logf(logrus.Level(level), msg, err)
 }
 
 type Result struct {

@@ -19,11 +19,11 @@ func GetLanguagesFrom(context interface{}) []Language {
 	languageStr := ""
 	switch c := context.(type) {
 	case *gin.Context:
-		languageStr = c.Request.Header.Get(http.CanonicalHeaderKey("Accept-Language"))
+		languageStr = c.Request.Header.Get("Accept-Language")
 	case http.Request:
-		languageStr = c.Header.Get(http.CanonicalHeaderKey("Accept-Language"))
+		languageStr = c.Header.Get("Accept-Language")
 	case http.Header:
-		languageStr = c.Get(http.CanonicalHeaderKey("Accept-Language"))
+		languageStr = c.Get("Accept-Language")
 	case string:
 		languageStr = c
 	default:
