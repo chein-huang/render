@@ -10,12 +10,12 @@ var (
 	UnknownCode = "error.data.unknown-error"
 
 	UnknownErrResponseMsg = InternationalizationString{
-		Default: "系统错误，请稍后重试！",
+		Default: "System error, please try again later!",
 		Map: map[string]string{
 			"zh-CN": "系统错误，请稍后重试！",
 			"zh":    "系统错误，请稍后重试！",
-			"en-US": "service error!",
-			"en":    "service error!",
+			"en-US": "System error, please try again later!",
+			"en":    "System error, please try again later!",
 		},
 	}
 )
