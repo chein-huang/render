@@ -13,11 +13,17 @@ import (
 
 func RenderError(writer interface{}, err error) {
 	buErr := GetBuError(err)
+	httpCode := buErr.HttpCode()
 
-	result, httpCode := Result{
-		Code: buErr.ResponseCode(),
-		Msg:  buErr.ResponseMessage(GetLanguagesFrom(writer)),
-	}, buErr.HttpCode()
+	detail := "%v"
+	if buErr.LogTrace() || httpCode == http.StatusInternalServerError {
+		detail = "%+v"
+	}
+	result := Result{
+		Code:   buErr.ResponseCode(),
+		Msg:    buErr.ResponseMessage(GetLanguagesFrom(writer)),
+		Detail: fmt.Sprintf(detail, err),
+	}
 
 	switch writer := writer.(type) {
 	case *gin.Context:
@@ -63,6 +69,7 @@ func Log(logger interface{}, err error, level Level, trace bool) {
 }
 
 type Result struct {
-	Code string `json:"code"`
-	Msg  string `json:"message"`
+	Code   string `json:"code"`
+	Msg    string `json:"message"`
+	Detail string `json:"detail"`
 }
