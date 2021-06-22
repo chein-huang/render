@@ -11,18 +11,21 @@ import (
 	"github.com/chein-huang/requestid"
 )
 
+var (
+	OpenDetail = false
+)
+
 func RenderError(writer interface{}, err error) {
 	buErr := GetBuError(err)
 	httpCode := buErr.HttpCode()
 
-	detail := "%v"
-	if buErr.LogTrace() || httpCode == http.StatusInternalServerError {
-		detail = "%+v"
-	}
 	result := Result{
-		Code:   buErr.ResponseCode(),
-		Msg:    buErr.ResponseMessage(GetLanguagesFrom(writer)),
-		Detail: fmt.Sprintf(detail, err),
+		Code: buErr.ResponseCode(),
+		Msg:  buErr.ResponseMessage(GetLanguagesFrom(writer)),
+	}
+
+	if OpenDetail {
+		result.Detail = fmt.Sprintf("%+v", err)
 	}
 
 	switch writer := writer.(type) {
@@ -71,5 +74,5 @@ func Log(logger interface{}, err error, level Level, trace bool) {
 type Result struct {
 	Code   string `json:"code"`
 	Msg    string `json:"message"`
-	Detail string `json:"detail"`
+	Detail string `json:"detail,omitempty"`
 }
