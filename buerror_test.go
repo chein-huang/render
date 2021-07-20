@@ -98,7 +98,7 @@ func TestResponseMessage(t *testing.T) {
 	assert.Equal("1,2", err.ResponseMessage([]render.Language{{"1", 1}, {"2", 1}}))
 
 	err = &render.BuError{
-		ResponseMsg_: render.InternationalizationString{
+		ResponseMsg_: render.I18nResource{
 			Default: "default",
 			Map: map[string]string{
 				"1": "2",
@@ -111,7 +111,7 @@ func TestResponseMessage(t *testing.T) {
 	assert.Equal("default", err.ResponseMessage([]render.Language{{"5", 1}}))
 
 	err = &render.BuError{
-		ResponseMsg_: &render.InternationalizationString{
+		ResponseMsg_: &render.I18nResource{
 			Default: "default",
 			Map: map[string]string{
 				"1": "2",
@@ -195,10 +195,10 @@ func TestUnknownErr(t *testing.T) {
 	assert.Equal("unknown error", err.Error())
 	assert.Equal(http.StatusInternalServerError, err.HttpCode())
 	assert.Equal(render.UnknownCode, err.ResponseCode())
-	assert.Equal(render.UnknownErrResponseMsg.Default, err.ResponseMessage(nil))
-	assert.Equal(render.UnknownErrResponseMsg.Default, err.ResponseMessage([]render.Language{{"unknown", 1}}))
-	assert.Equal(render.UnknownErrResponseMsg.Map["zh"], err.ResponseMessage([]render.Language{{"zh", 1}, {"unknown", 1}}))
-	assert.Equal(render.UnknownErrResponseMsg.Map["en"], err.ResponseMessage([]render.Language{{"en", 1}, {"unknown", 1}}))
+	assert.Equal(render.UnknownErrResponseMsg.Resource().Default, err.ResponseMessage(nil))
+	assert.Equal(render.UnknownErrResponseMsg.Resource().Default, err.ResponseMessage([]render.Language{{"unknown", 1}}))
+	assert.Equal(render.UnknownErrResponseMsg.Resource().Map["zh"], err.ResponseMessage([]render.Language{{"zh", 1}, {"unknown", 1}}))
+	assert.Equal(render.UnknownErrResponseMsg.Resource().Map["en"], err.ResponseMessage([]render.Language{{"en", 1}, {"unknown", 1}}))
 	assert.Equal(render.ErrorLevel, err.LogLevel())
 	assert.True(err.LogTrace())
 }

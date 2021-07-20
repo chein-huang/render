@@ -9,15 +9,7 @@ import (
 var (
 	UnknownCode = "error.data.unknown-error"
 
-	UnknownErrResponseMsg = InternationalizationString{
-		Default: "System error, please try again later!",
-		Map: map[string]string{
-			"zh_CN": "系统错误，请稍后重试！",
-			"zh":    "系统错误，请稍后重试！",
-			"en_US": "System error, please try again later!",
-			"en":    "System error, please try again later!",
-		},
-	}
+	UnknownErrResponseMsg I18nID = "UnknownErrResponseMsg"
 )
 
 type BuError struct {
@@ -64,9 +56,9 @@ func (e *BuError) ResponseMessage(languages []Language) string {
 		return msg()
 	case func([]Language) string:
 		return msg(languages)
-	case InternationalizationString:
+	case I18nResource:
 		return msg.String(languages)
-	case *InternationalizationString:
+	case *I18nResource:
 		return msg.String(languages)
 	case string:
 		return msg
@@ -104,7 +96,7 @@ func UnknownErr(err error) *BuError {
 		LogLevel_:     ErrorLevel,
 		HttpCode_:     http.StatusInternalServerError,
 		ResponseCode_: UnknownCode,
-		ResponseMsg_:  &UnknownErrResponseMsg,
+		ResponseMsg_:  UnknownErrResponseMsg.Resource(),
 		NeedTrace_:    true,
 	}
 }
