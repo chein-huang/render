@@ -60,6 +60,10 @@ func (e *BuError) ResponseMessage(languages []Language) string {
 		return msg.String(languages)
 	case *I18nResource:
 		return msg.String(languages)
+	case *I18nID:
+		return msg.String(languages)
+	case I18nID:
+		return msg.String(languages)
 	case string:
 		return msg
 	default:
