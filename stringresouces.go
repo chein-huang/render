@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 var (
@@ -47,33 +49,38 @@ func MustString(id string, ls []Language) string {
 	return s.String(ls)
 }
 
-func SetResource(id string, s *I18nResource) {
-	resourceMap[id] = s
+func SetResource(prefix, id string, s *I18nResource) {
+	resourceMap[prefix+id] = s
 }
 
-func SetResources(m map[string]*I18nResource) {
+func SetResources(prefix string, m map[string]*I18nResource) {
 	for k, v := range m {
-		resourceMap[k] = v
+		resourceMap[prefix+k] = v
 	}
 }
 
-func SetByJsonDecoder(d *json.Decoder) error {
+func SetByJsonDecoder(prefix string, d *json.Decoder) error {
 	m := map[string]*I18nResource{}
 	err := d.Decode(&m)
 	if err != nil {
 		return err
 	}
 
-	SetResources(m)
+	SetResources(prefix, m)
 	return nil
 }
 
-func SetByFilename(filename string) error {
+func SetByFilename(prefix *string, filename string) error {
 	f, err := os.Open(filename)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 
-	return SetByJsonDecoder(json.NewDecoder(f))
+	if prefix == nil {
+		p := strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename))
+		prefix = &p
+	}
+
+	return SetByJsonDecoder(*prefix, json.NewDecoder(f))
 }
