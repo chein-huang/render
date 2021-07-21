@@ -50,19 +50,21 @@ func MustString(id string, ls []Language) string {
 }
 
 func SetResource(prefix, id string, s *I18nResource) {
-	if _, ok := resourceMap[prefix+id]; !ok {
-		resourceMap[prefix+prefix+id] = s
+	key := prefix + "." + id
+	if _, ok := resourceMap[key]; !ok {
+		resourceMap[key] = s
 	} else {
-		panic(fmt.Sprintf("key: %v is already in map", prefix+id))
+		panic(fmt.Sprintf("key: %v is already in map", key))
 	}
 }
 
 func SetResources(prefix string, m map[string]*I18nResource) {
 	for k, v := range m {
-		if _, ok := resourceMap[k]; !ok {
-			resourceMap[prefix+k] = v
+		key := prefix + "." + k
+		if _, ok := resourceMap[key]; !ok {
+			resourceMap[key] = v
 		} else {
-			panic(fmt.Sprintf("key: %v is already in map", k))
+			panic(fmt.Sprintf("key: %v is already in map", key))
 		}
 	}
 }

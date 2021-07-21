@@ -9,7 +9,7 @@ import (
 var (
 	UnknownCode = "error.data.unknown-error"
 
-	UnknownErrResponseMsg I18nID = "UnknownErrResponseMsg"
+	UnknownErrResponseMsg I18nID = "ResponseMsg.UnknownErr"
 )
 
 type BuError struct {
