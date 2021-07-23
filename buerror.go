@@ -57,13 +57,13 @@ func (e *BuError) ResponseMessage(languages []Language) string {
 	case func([]Language) string:
 		return msg(languages)
 	case I18nResource:
-		return msg.String(languages)
+		return msg.String(languages, nil)
 	case *I18nResource:
-		return msg.String(languages)
+		return msg.String(languages, nil)
 	case *I18nID:
-		return msg.String(languages)
+		return msg.String(languages, nil)
 	case I18nID:
-		return msg.String(languages)
+		return msg.String(languages, nil)
 	case string:
 		return msg
 	default:
