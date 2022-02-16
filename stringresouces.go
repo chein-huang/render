@@ -35,7 +35,7 @@ func Resource(id string) (*I18nResource, bool) {
 func MustResource(id string) *I18nResource {
 	s, ok := globalMap[id]
 	if !ok {
-		panic(fmt.Sprintf("%v not found", id))
+		return nil
 	}
 	return s
 }

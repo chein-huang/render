@@ -32,7 +32,11 @@ func (i I18nID) Resource() *I18nResource {
 }
 
 func (i I18nID) String(ls []Language, args map[string]interface{}) string {
-	return MustResource(string(i)).String(ls, args)
+	resource := MustResource(string(i))
+	if resource == nil {
+		return string(i)
+	}
+	return resource.String(ls, args)
 }
 
 func TemplateString(t *template.Template, args map[string]interface{}) string {
