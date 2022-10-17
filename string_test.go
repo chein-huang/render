@@ -16,6 +16,7 @@ func TestI18n(t *testing.T) {
 
 	assert.Equal("default <no value>", i.String(nil, nil))
 	assert.Equal("default msg", i.String(nil, map[string]interface{}{
-		"msg": "msg",
+		"msg":  "msg",
+		"msg2": "msg2",
 	}))
 }

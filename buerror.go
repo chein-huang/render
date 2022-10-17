@@ -3,6 +3,7 @@ package render
 import (
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -39,6 +40,21 @@ func (e *BuError) Error() string {
 		return msg
 	default:
 		return fmt.Sprintf("%v", msg)
+	}
+}
+
+func (e *BuError) Format(s fmt.State, verb rune) {
+	switch verb {
+	case 'v':
+		if s.Flag('+') {
+			fmt.Fprintf(s, "%v\n%+v", e.Error(), e.Error_)
+			return
+		}
+		fallthrough
+	case 's':
+		io.WriteString(s, e.Error())
+	case 'q':
+		fmt.Fprintf(s, "%q", e.Error())
 	}
 }
 
